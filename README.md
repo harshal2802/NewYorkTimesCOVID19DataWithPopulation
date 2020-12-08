@@ -16,6 +16,9 @@
   - [Preprocess New York Times COVID-19 Data](#preprocess-new-york-times-covid-19-data)
   - [Create Combined View](#create-combined-view)
   - [Generate Statistics on combined view](#generate-statistics-on-combined-view)
+- [Learnings or thoughts on data source](#learnings-or-thoughts-on-data-source)
+- [Testing the output](#testing-the-output)
+- [Things I would add given more time](#things-you-would-add-given-more-time)
 - [License](#license)
 - [Contact](#contact)
 - [Acknowledgements](#acknowledgements)
@@ -50,7 +53,7 @@ To get a local copy up and running follow these simple example steps.
 
 ### Prerequisites
 
-This project requires knowledge of Python 3.5.2+, and pandas
+This project requires knowledge of Python 3.6, and pandas
 
 ### Installation
 
@@ -197,7 +200,7 @@ Here is explanation of major preprocessing functions from
 PopulationEstimateData2019 class
 
 1. preprocess_missing_values: Function to handle missing values in relavent
-   columns ["fips","date","cases","deaths"]
+   columns ["fips","date","cases","deaths"] <br>
    Logic:<br>
    - fips: If the value for the "fips" column is missing
      we can not create a join with the population data,
@@ -263,6 +266,45 @@ Final dataframe looks like:
 - daily_deaths:integer
 - cumulative_cases_to_date:integer
 - cumulative_deaths_to_date:integer
+
+<!-- Learnings or thoughts on data source -->
+
+## Learnings or thoughts on data source
+
+In real world most of the datasource are not perfect and the provided data
+i.e. New York Times COVID-19 Data and Population Estimate Data 2019 is also
+has no exception:
+Here are few observations about New York Times COVID-19 Data:
+
+- There are 7620 records which does not have "fips" value populated.
+  Most of these record belongs to county values: Joplin(164 records),
+  Kansas City( 261 records),New York City( 280 records), Unknown( 6886 records )
+  - The reason behind these missing fips code is changes made in reporting of these cases
+    by different authorities. <br>
+    For simplicity we are neglecting these records for the time being
+- For Puerto Rico state: There are 16811 records for which deaths has not
+  been recorded. We are removing these records as well for the calculation simplicity.
+- There are Geographic Exceptions defined for the New York Times COVID-19 Dataset,
+  which explains some of the missing records. We have defined a placeholder function
+  "update_df_with_geographic_exceptions" as a part of NewYorkTimesCovid19Data class to
+  include Geographic Exceptions logic in future.
+
+<!-- Testing the output -->
+
+## Testing the output
+
+Here are few steps to test the sanity of the processed dataframe:
+
+- Check if all the fips available in final dataframe as compare to original data.
+- Check for all "fips" value the date column should be increasing order with the cumulative
+  values(cumulative_cases_to_date, cumulative_deaths_to_date) are also in non-decreasing order
+
+<!-- Things I would add given more time -->
+
+## Things I would add given more time
+
+Given more time I would like to improve the accuracy in dataset by implementing
+the logic to include Geographic exceptions for the New York Times COVID-19 Data
 
 <!-- LICENSE -->
 
