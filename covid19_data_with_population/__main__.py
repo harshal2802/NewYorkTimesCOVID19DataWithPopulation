@@ -26,10 +26,16 @@ def main():
                         default="./aggregated_covid19_data_with_population.csv",
                         help="Path of output csv file")
 
+    parser.add_argument('--apply_sanity_check_on_output_data',
+                        type=bool,
+                        default=False,
+                        help="Path of output csv file")
+
     args = parser.parse_args()
-    print(f"Reading New York Times COVID-19 Data from {args.covid19_csv_path}\
-            Reading 2019 Population Estimate Data from {args.population_csv_path}\
-            Output file path for processed file is: {args.output_file_path}")
+    print(f"Reading New York Times COVID-19 Data from {args.covid19_csv_path}")
+    print(
+        f"Reading 2019 Population Estimate Data from {args.population_csv_path}")
+    print(f"Output file path for processed file is: {args.output_file_path}")
     # -------------------------------------------------------------------------
     # 2. Get and preprocess Raw data
     # Get the newyork times covid 19 data
@@ -61,7 +67,10 @@ def main():
     # 5. save generated dataframe to out path
     newyork_times_covid19_data.save_dataframe_as_csv(df_out,
                                                      args.output_file_path)
-    print("Completed: save generated dataframe to out path")
+    print(
+        f"Completed: save generated dataframe to out path: {args.output_file_path}")
+    if args.apply_sanity_check_on_output_data:
+        newyork_times_covid19_data.sanity_check_prepared_data(df_out)
 
 
 if __name__ == '__main__':
