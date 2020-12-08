@@ -288,23 +288,37 @@ Here are few observations about New York Times COVID-19 Data:
   which explains some of the missing records. We have defined a placeholder function
   "update_df_with_geographic_exceptions" as a part of NewYorkTimesCovid19Data class to
   include Geographic Exceptions logic in future.
+- Population data For fips code 69110(Saipan, MP), 69120(Aguijan, MP and Tinian, MP),
+  78010(St. Croix, VI), 78020( St. John, VI ), 78030( St. Thomas, VI ) is missing.
+  For the time being we will report these value of population as Null.
+  We can improve this data by obtaining the population of these missing fips code from
+  official sources.
 
 <!-- Testing the output -->
 
 ## Testing the output
 
 Here are few steps to test the sanity of the processed dataframe:
+check the "sanity_check_prepared_data" function in NewYorkTimesCovid19Data class
 
+- Check all the expected columns are available in the dataframe
 - Check if all the fips available in final dataframe as compare to original data.
-- Check for all "fips" value the date column should be increasing order with the cumulative
-  values(cumulative_cases_to_date, cumulative_deaths_to_date) are also in non-decreasing order
+- Check for all the fips value the data is available except for the counties
+  for which population data is missing, (69110', '69120', '78010', '78020', '78030')
+- Check for all "fips" value the date column should be increasing order with
+  the cumulative values(cumulative_cases_to_date, cumulative_deaths_to_date)
+  are also in non-decreasing order
 
 <!-- Things I would add given more time -->
 
 ## Things I would add given more time
 
-Given more time I would like to improve the accuracy in dataset by implementing
-the logic to include Geographic exceptions for the New York Times COVID-19 Data
+Given more time I would like to improve the accuracy and completness in dataset
+by:
+
+- implementing the logic to include Geographic exceptions for the New York Times
+  COVID-19 Data
+- getting the population data for the counties for which population is missing
 
 <!-- LICENSE -->
 
