@@ -339,3 +339,40 @@ class NewYorkTimesCovid19Data(DataSet):
                         "cumulative_deaths_to_date"]
         df = self.feature_selection(df, feature_list)
         return df
+
+    def sanity_check_prepared_data(self, df_prepared):
+        """
+        Function to test the prepared dataframe
+
+        """
+        print("Applying Sanity check on the output dataframe::")
+        # 1. Check all the expected columns are available in the dataframe
+        desired_columns = ["fips", "date", "population", "daily_cases",
+                           "daily_deaths", "cumulative_cases_to_date",
+                           "cumulative_deaths_to_date"]
+        df_prepared = df_prepared.reset_index()
+        for c in desired_columns:
+            if c not in df_prepared.columns:
+                raise Exception(
+                    f"Desired Column{c} is not present in processed dataframe")
+
+        # 2. Check if all the fips available in final dataframe as compare to original data.
+        fips_in_original_data = self.df.fips.dropna().unique()
+        print("Missing fips code as compare to original dataset",
+              set(fips_in_original_data)-set(df_prepared.fips.unique()))
+        # 3. Check for all the fips value the data is available except for the counties for which population
+        #    data is missing, (69110', '69120', '78010', '78020', '78030')
+        print("fips code related to null value of population",
+              df_prepared[df_prepared.population.isna()].fips.unique())
+        print("fips code related to null value of daily_cases",
+              df_prepared[df_prepared.daily_cases.isna()].fips.unique())
+        print("fips code related to null value of daily_deaths",
+              df_prepared[df_prepared.daily_deaths.isna()].fips.unique())
+        # 4. Check for all "fips" value the date column should be increasing order with the cumulative
+        #    values(cumulative_cases_to_date, cumulative_deaths_to_date) are also in non-decreasing order
+        df_fips_status = df_prepared.groupby("fips")\
+            .apply(lambda df_tmp: (df_tmp.date.is_monotonic
+                                   and df_tmp.cumulative_cases_to_date.is_monotonic
+                                   and df_tmp.cumulative_deaths_to_date.is_monotonic))
+        print("fips values for which columns:['date','cumulative_cases_to_date','cumulative_deaths_to_date'] is not monotonic",
+              df_fips_status[df_fips_status == False].index)
