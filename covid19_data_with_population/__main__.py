@@ -29,7 +29,7 @@ def main():
     parser.add_argument('--apply_sanity_check_on_output_data',
                         type=bool,
                         default=False,
-                        help="Path of output csv file")
+                        help="boolean value, True: apply sanity check on output data")
 
     args = parser.parse_args()
     print(f"Reading New York Times COVID-19 Data from {args.covid19_csv_path}")
